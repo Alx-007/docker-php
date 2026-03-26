@@ -1,0 +1,28 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_DATABASE: prueba_db
+      MYSQL_ROOT_PASSWORD: root12345
+      MYSQL_USER: usuario_web
+      MYSQL_PASSWORD: user12345
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - db_data:/var/lib/mysql
+
+  php:
+    build: ./php
+    container_name: php_app
+    ports:
+      - "8080:80"
+    volumes:
+      - ./php/src:/var/www/html
+    depends_on:
+      - db
+
+volumes:
+  db_data:
